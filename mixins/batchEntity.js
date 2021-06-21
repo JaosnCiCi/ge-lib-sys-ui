@@ -1,6 +1,8 @@
 /**
  *
  */
+import Vue from 'vue'
+window.Vue = Vue
 import visibleMiXin from './visibleMiXin'
 import pageIndexMiXin from './pageMixin'
 import ruleMiXin from './ruleMiXin'

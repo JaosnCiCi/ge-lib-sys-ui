@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import listError from './listError/index'
 import dataChangeReason from './dataChangeReason/index'
 const components = [listError, dataChangeReason]
