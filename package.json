@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lib": "vue-cli-service build --target lib --name ge-lib-sys-ui --dest lib packages/index.js"
+    "lib": "vue-cli-service build --target lib --name ge-lib-sys-ui --inline-vue --dest lib packages/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -45,7 +45,7 @@
     "not dead"
   ],
   "description": "## Project setup ``` npm install ```",
-  "main": "packages/index.js",
+  "main": "lib/ge-lib-sys-ui.umd.js",
   "directories": {
     "lib": "lib"
   },
