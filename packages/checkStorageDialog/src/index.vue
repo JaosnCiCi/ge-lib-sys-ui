@@ -1,6 +1,16 @@
 <template>
   <div>
-    <el-dialog v-if="visible" v-dialogDrag :visible.sync="visible" :close-on-click-modal="false" :append-to-body="true" width="70%" title="填写入库信息" center class="dialog" @close="handelCancel">
+    <el-dialog
+      v-dialogDrag
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+      width="70%"
+      title="填写入库信息"
+      center
+      class="dialog"
+      @close="handelCancel"
+    >
       <div v-if="row1.length > 0" style="font-size: 15px;">
         <div style="margin: 10px 0;">以下样本入库，请填写相关库位信息</div>
         <el-dropdown @command="handleCommand">
@@ -9,13 +19,23 @@
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="item in deposit_type" :key="item.code" :command="item.code" :disabled="item.isValid=='0'">{{ item.nameCn }}</el-dropdown-item>
+            <el-dropdown-item
+              v-for="item in deposit_type"
+              :key="item.code"
+              :command="item.code"
+              :disabled="item.isValid=='0'"
+            >{{ item.nameCn }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-button type="primary" class="border_size" size="mini" @click="showDialog_Sample">选择样本盒</el-button>
         <el-button type="primary" class="border_size" size="mini" @click="showDialog_Box">批量粘贴样本盒</el-button>
         <el-button type="primary" class="border_size" size="mini" @click="judge">批量粘贴盒内位置</el-button>
-        <el-button type="primary" class="border_size" size="mini" @click="inputTextLimsVisible = true">批量选中样本</el-button>
+        <el-button
+          type="primary"
+          class="border_size"
+          size="mini"
+          @click="inputTextLimsVisible = true"
+        >批量选中样本</el-button>
         <div style="float:right">
           <v-select-count :selection="selectTable" :total="row1.length" />
         </div>
@@ -52,9 +72,28 @@
         >
           <vxe-table-column type="checkbox" align="center" width="50" />
           <vxe-table-column field="sampleIdLims" label="LIMS号" align="center" width="150" />
-          <vxe-table-column v-if="!['libquant','sequencing','sequencingAdjusted'].includes(step)" label="实验室号" align="center" width="200" field="sampleIdLab" />
-          <vxe-table-column v-if="['sequencing','sequencingAdjusted'].includes(step)" label="上机批次号（实验）" align="center" width="150" field="sqcGroupNum" />
-          <vxe-table-column v-if="['libquant'].includes(step)" label="富集名称" align="center" width="150" field="poolingName" sortable />
+          <vxe-table-column
+            v-if="!['libquant','sequencing','sequencingAdjusted'].includes(step)"
+            label="实验室号"
+            align="center"
+            width="200"
+            field="sampleIdLab"
+          />
+          <vxe-table-column
+            v-if="['sequencing','sequencingAdjusted'].includes(step)"
+            label="上机批次号（实验）"
+            align="center"
+            width="150"
+            field="sqcGroupNum"
+          />
+          <vxe-table-column
+            v-if="['libquant'].includes(step)"
+            label="富集名称"
+            align="center"
+            width="150"
+            field="poolingName"
+            sortable
+          />
           <vxe-table-column
             :edit-render="{
               name: '$select',
@@ -91,8 +130,15 @@
         <div>以下样本还未提交，请先进行提交操作，具体如下：</div>
         <div class="rowClass">
           <!-- <div v-for="(item, index) in row2" :key="index">{{ item.sampleIdLims }}</div> -->
-          <div v-if="row2.length <=6" style="display: flex;justify-content: space-between;flex-wrap: wrap;">
-            <span v-for="(item, idx) of row2" :key="idx" style="padding:0 20px">{{ item.sampleIdLims + " " }}</span>
+          <div
+            v-if="row2.length <=6"
+            style="display: flex;justify-content: space-between;flex-wrap: wrap;"
+          >
+            <span
+              v-for="(item, idx) of row2"
+              :key="idx"
+              style="padding:0 20px"
+            >{{ item.sampleIdLims + " " }}</span>
           </div>
           <div v-else>
             <v-showMore style="margin-top: 20px" :content="row2" />
@@ -101,13 +147,30 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handelCancel">取 消</el-button>
-        <el-button v-if="row1.length == 0 && row2.length !== 0" type="primary" @click="handelEnsure">确 定</el-button>
+        <el-button
+          v-if="row1.length == 0 && row2.length !== 0"
+          type="primary"
+          @click="handelEnsure"
+        >确 定</el-button>
         <el-button v-else type="primary" @click="handelEnsure">下一步</el-button>
       </div>
     </el-dialog>
     <v-boxSearch ref="dialogSearchSapleBox" :storage-type="'00'" @doSure="doSure" />
-    <v-positionBoxCopy :visible.sync="inputTextAreaDialogVisible" :rows="courseTable" title="批量粘贴盒内位置" sub-title="*请将excel中的两列（LIMS号，盒内位置）直接复制粘贴进该文本框。" @confim="handleAddBoxPosition" />
-    <v-dialogSampleBoxCopy :visible.sync="sampleBoxCopyVisible" :rows="courseTable" title="批量粘贴样本盒" sub-title="*请将excel中的两列（LIMS号，样本盒）直接复制粘贴进该文本框。" @handelCancel="sampleBoxCopyVisible = false" @confim="handleAddBoxPosition" />
+    <v-positionBoxCopy
+      :visible.sync="inputTextAreaDialogVisible"
+      :rows="courseTable"
+      title="批量粘贴盒内位置"
+      sub-title="*请将excel中的两列（LIMS号，盒内位置）直接复制粘贴进该文本框。"
+      @confim="handleAddBoxPosition"
+    />
+    <v-dialogSampleBoxCopy
+      :visible.sync="sampleBoxCopyVisible"
+      :rows="courseTable"
+      title="批量粘贴样本盒"
+      sub-title="*请将excel中的两列（LIMS号，样本盒）直接复制粘贴进该文本框。"
+      @handelCancel="sampleBoxCopyVisible = false"
+      @confim="handleAddBoxPosition"
+    />
     <el-dialog
       v-dialogDrag
       :visible.sync="dialogNext"
@@ -126,8 +189,23 @@
         <div class="item-group">
           <div class="item-left">以下{{ arr2.length }}个样本即将入永久库，请选择实验室审核人：</div>
           <div class="item-right">
-            <el-select v-model="query.nextProcessorId" :remote-method="querySearchAsync" :loading="loading" filterable remote reserve-keyword placeholder="请输入内容" @change="handleSelect">
-              <el-option v-for="item in experimenterList" :key="item.username" :label="item.usernameCn" :value="item.username" :disabled="item.isValid=='0'" />
+            <el-select
+              v-model="query.nextProcessorId"
+              :remote-method="querySearchAsync"
+              :loading="loading"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入内容"
+              @change="handleSelect"
+            >
+              <el-option
+                v-for="item in experimenterList"
+                :key="item.username"
+                :label="item.usernameCn"
+                :value="item.username"
+                :disabled="item.isValid=='0'"
+              />
             </el-select>
           </div>
         </div>
@@ -144,7 +222,11 @@
       </div>
     </el-dialog>
     <!-- 批量选中样本 -->
-    <v-inputTextLimsDialog :visible="inputTextLimsVisible" @cancel="inputTextLimsVisible = false" @confirm="confirmSelect($event)" />
+    <v-inputTextLimsDialog
+      :visible="inputTextLimsVisible"
+      @cancel="inputTextLimsVisible = false"
+      @confirm="confirmSelect($event)"
+    />
   </div>
 </template>
 
@@ -186,7 +268,7 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     return {
       row1: [],
       row2: [],
@@ -217,7 +299,7 @@ export default {
     'v-showMore': showMore,
     'v-dialogSampleBoxCopy': dialogSampleBoxCopy
   },
-  created() {
+  mounted () {
     var baseArr = ['deposit_type']
     baseArr.map(item => {
       this.getBasicDir(item)
@@ -226,7 +308,7 @@ export default {
   methods: {
     ...mapActionsU(['getBasicDir', 'itemTableStorageSubmit']),
     ...mapActionsO(['userInfo']),
-    doAfterShow() {
+    doAfterShow () {
       this.arr1 = []
       this.arr2 = []
       this.selectTable = []
@@ -243,11 +325,12 @@ export default {
       this.query.nextProcessorName = ''
       this.query.nextProcessorId = ''
     },
-    handelCancel() {
+    handelCancel () {
       this.$emit('handelCancel')
+      this.dialogVisible = false
       this.dialogNext = false
     },
-    handelEnsure() {
+    handelEnsure () {
       var error = false
       this.row1.forEach(item => {
         this.$set(item, 'targetStorageTypeError', false)
@@ -290,10 +373,10 @@ export default {
       }
       this.handelNextProcessor()
     },
-    handleSelectionChange(data) {
+    handleSelectionChange (data) {
       this.selectTable = data.records
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
@@ -312,7 +395,7 @@ export default {
         this.$set(x, 'targetStorageType', command)
       })
     },
-    showDialog_Sample() {
+    showDialog_Sample () {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
@@ -341,7 +424,7 @@ export default {
       this.courseTable = arr2
       this.$refs.dialogSearchSapleBox.dialogVisible = true
     },
-    showDialog_Box() {
+    showDialog_Box () {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
@@ -370,7 +453,7 @@ export default {
       this.courseTable = arr2
       this.sampleBoxCopyVisible = true
     },
-    doSure(query) {
+    doSure (query) {
       this.courseTable.forEach(item => {
         item.storageId = query.storageId
         item.storageName = query.storageName
@@ -378,7 +461,7 @@ export default {
         item.boxName = query.boxName
       })
     },
-    judge() {
+    judge () {
       var arr1 = this.row1.filter(
         item => item.targetStorageType !== null && item.targetStorageType !== ''
       )
@@ -400,7 +483,7 @@ export default {
       this.courseTable = arr2
       this.inputTextAreaDialogVisible = true
     },
-    handleStorageType({
+    handleStorageType ({
       row
     }) {
       if (row.targetStorageType == '02') {
@@ -411,7 +494,7 @@ export default {
         row.positionInBox = ''
       }
     },
-    tableCellClassName({
+    tableCellClassName ({
       row,
       column,
       rowIndex,
@@ -428,14 +511,14 @@ export default {
       }
       return ''
     },
-    updateTable() {
+    updateTable () {
       this.row1.push({})
       this.row1.pop()
     },
-    handleAddBoxPosition() {
+    handleAddBoxPosition () {
       this.updateTable()
     },
-    handleSelect(item) {
+    handleSelect (item) {
       console.log(window.userid, item)
       if (window.userid == item) {
         this.$message({
@@ -455,7 +538,7 @@ export default {
         'usernameCn'
       )
     },
-    querySearchAsync(queryString = '') {
+    querySearchAsync (queryString = '') {
       if (queryString !== '') {
         this.loading = true
 
@@ -472,12 +555,12 @@ export default {
         this.experimenterList = []
       }
     },
-    handelBack() {
+    handelBack () {
       this.query.nextProcessorName = ''
       this.query.nextProcessorId = ''
       this.dialogNext = false
     },
-    handelNextProcessor() {
+    handelNextProcessor () {
       this.sampleDepositTaskTError = ''
       if (this.arr2.length != 0 && this.query.nextProcessorId == '') {
         this.sampleDepositTaskTError = '请填写实验室审核人'
@@ -490,8 +573,9 @@ export default {
       var params = {}
       params.expTaskType = this.step
       params.sampleDepositOperationVO = []
+      var obj = {}
       if (this.arr1.length !== 0) {
-        var obj = {}
+        obj = {}
         obj.sampleDepositTaskT = {
           depositType: '01',
           sourceTaskId: this.sourceTaskId
@@ -500,7 +584,7 @@ export default {
         params.sampleDepositOperationVO.push(obj)
       }
       if (this.arr2.length !== 0) {
-        var obj = {}
+        obj = {}
         obj.sampleDepositTaskT = {
           depositType: '02',
           sourceTaskId: this.sourceTaskId,
@@ -546,7 +630,7 @@ export default {
         }
       })
     },
-    confirmSelect(e) {
+    confirmSelect (e) {
       var arr = []
       var arr1 = []
       var err = []
@@ -561,7 +645,6 @@ export default {
         }
       })
       console.log(err, arr1)
-      var arr = []
       this.row1.forEach(x => {
         arr1.forEach(y => {
           if (x.sampleIdLims == y) {
@@ -582,13 +665,13 @@ export default {
         this.$refs.xtable.toggleCheckboxRow(item, true)
       })
     },
-    sortByDate(obj1, obj2) {
+    sortByDate (obj1, obj2) {
       const val1 = obj1.positionInBox
       const val2 = obj2.positionInBox
       return val1 - val2
     },
     // 是否可以编辑
-    activeMethod({
+    activeMethod ({
       row,
       rowIndex,
       column,

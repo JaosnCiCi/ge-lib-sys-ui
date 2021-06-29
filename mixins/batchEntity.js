@@ -51,8 +51,8 @@ var mixinMethod = {
   watch: {
     selectTable: (val) => {
       if (val instanceof Array && val.length == 0) {
-        this.selection == val
-        this.selection1 == val
+        this.selection = val
+        this.selection1 = val
       }
     }
   },
