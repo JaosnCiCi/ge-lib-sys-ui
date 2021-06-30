@@ -142,6 +142,7 @@ export default {
       this.$set(this, 'dialogVisible', false)
     },
     cancel () {
+      this.$set(this, 'dialogVisible', false)
       this.$emit('handelCancel')
     }
   }

@@ -244,6 +244,10 @@ export default {
     ...mapActionsU(['getBasicDir', 'separteFromItemTable']),
     doAfterShow() {
       this.dividedTableData = this.row
+       this.selection = []
+      if (this.$refs.process && this.$refs.process.clearCheckboxRow instanceof Object) {
+          this.$refs.process.clearCheckboxRow()
+      }
       this.dividedTableData.map(item => {
         item.vitroNumber = '1'
       })
