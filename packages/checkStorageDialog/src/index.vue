@@ -326,7 +326,7 @@ export default {
       this.query.nextProcessorId = ''
     },
     handelCancel () {
-      this.$refs.xtable.clearCheckboxRow()
+      this.$refs.xtable && this.$refs.xtable.clearCheckboxRow()
       this.$emit('handelCancel')
       this.dialogVisible = false
       this.dialogNext = false
