@@ -145,6 +145,11 @@ export default {
       total: 0
     }
   },
+  mounted() {
+    this.initQuery()
+    this.query.storageType = this.storageType
+    this.fetch()
+  },
   methods: {
     ...mapActions(['fetchBoxList']),
     fetch () {
