@@ -69,7 +69,7 @@
           <vxe-table-column type="checkbox" align="center" width="55" />
           <vxe-table-column field="sampleIdLab" title="实验室号" align="center" />
           <vxe-table-column field="sampleTypeName" title="样本类型" align="center" />
-          <!-- <vxe-table-column
+          <vxe-table-column
             v-if="step == 'expExtraction'"
             :edit-render="{
               name: '$select',
@@ -93,7 +93,7 @@
                 />
               </vxe-select>
             </template>
-          </vxe-table-column> -->
+          </vxe-table-column>
           <vxe-table-column
             :edit-render="{
               name: '$select',
@@ -219,26 +219,26 @@ export default {
     sample_workflow: function () {
       var arr1 = []
       switch (this.step) {
-        case 'expExtraction': arr1  = ['核酸提取', '文库构建', '上机']; break
+        case 'expExtraction': arr1 = ['核酸提取', '文库构建', '上机']; break
         case 'expUltrafrac':
-        case 'expLibconstruction': arr1  = ['文库构建', '上机']; break
+        case 'expLibconstruction': arr1 = ['文库构建', '上机']; break
         case 'expPooling':
         case 'expLibquant':
-        case 'expSequencing': arr 1 = ['上机']; break
+        case 'expSequencing': arr1 = ['上机']; break
       }
       return this.sample_workflow_step.filter(item => {
-           rn arr1.indexOf(item.nameCn) > -1
+        return arr1.indexOf(item.nameCn) > -1
       })
     },
     sample_workflow1: function () {
       var arr1 = []
       switch (this.step) {
-        case 'expExtraction': arr 1 = ['核酸提取', '文库构建', '上机']; break
+        case 'expExtraction': arr1 = ['核酸提取', '文库构建', '上机']; break
         case 'expUltrafrac':
-        case 'expLibconstruction': ar r1 = ['文库构建', '上机']; break
+        case 'expLibconstruction': arr1 = ['文库构建', '上机']; break
       }
       return this.sample_workflow_step.filter(item => {
-          urn arr1.indexOf(item.nameCn) > -1
+        return arr1.indexOf(item.nameCn) > -1
       })
     }
   },
