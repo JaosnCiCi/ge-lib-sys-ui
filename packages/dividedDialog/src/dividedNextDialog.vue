@@ -69,7 +69,7 @@
           <vxe-table-column type="checkbox" align="center" width="55" />
           <vxe-table-column field="sampleIdLab" title="实验室号" align="center" />
           <vxe-table-column field="sampleTypeName" title="样本类型" align="center" />
-          <!-- <vxe-table-column
+          <vxe-table-column
             v-if="step == 'expExtraction'"
             :edit-render="{
               name: '$select',
@@ -93,7 +93,7 @@
                 />
               </vxe-select>
             </template>
-          </vxe-table-column> -->
+          </vxe-table-column>
           <vxe-table-column
             :edit-render="{
               name: '$select',
@@ -107,28 +107,28 @@
           >
             <template slot-scope="scope">{{ scope.row.lastStep | getDirName(sample_workflow_step) }}</template>
             <template v-slot:edit="scope">
-              <vxe-select
+              <el-select
                 v-if="scope.row.isUltrafrac == '1' ||scope.row.isUltrafrac == null"
                 v-model="scope.row.lastStep"
                 placeholder="最后步骤"
               >
-                <vxe-option
+                <el-option
                   v-for="item in sample_workflow1"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
                   :disabled="item.isValid=='0'"
                 />
-              </vxe-select>
-              <vxe-select v-else v-model="scope.row.lastStep" placeholder="最后步骤">
-                <vxe-option
+              </el-select>
+              <el-select v-else v-model="scope.row.lastStep" placeholder="最后步骤">
+                <el-option
                   v-for="item in sample_workflow"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
                   :disabled="item.isValid=='0'"
                 />
-              </vxe-select>
+              </el-select>
             </template>
           </vxe-table-column>
         </vxe-table>
@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { values } from 'xe-utils/methods'
+imp ort { values } from 'xe-utils/methods'
 import { createNamespacedHelpers } from 'vuex'
 const {
   mapState: mapStateU,
@@ -219,26 +219,26 @@ export default {
     sample_workflow: function () {
       var arr1 = []
       switch (this.step) {
-        case 'expExtraction':arr1 = ['核酸提取', '文库构建', '上机']; break
+        case 'expExtraction': arr1  = ['核酸提取', '文库构建', '上机']; break
         case 'expUltrafrac':
-        case 'expLibconstruction':arr1 = ['文库构建', '上机']; break
+        case 'expLibconstruction': arr1  = ['文库构建', '上机']; break
         case 'expPooling':
         case 'expLibquant':
-        case 'expSequencing':arr1 = ['上机']; break
+        case 'expSequencing': arr 1 = ['上机']; break
       }
       return this.sample_workflow_step.filter(item => {
-         return arr1.indexOf(item.nameCn) > -1
+           rn arr1.indexOf(item.nameCn) > -1
       })
     },
     sample_workflow1: function () {
       var arr1 = []
       switch (this.step) {
-        case 'expExtraction':arr1 = ['核酸提取', '文库构建', '上机']; break
+        case 'expExtraction': arr 1 = ['核酸提取', '文库构建', '上机']; break
         case 'expUltrafrac':
-        case 'expLibconstruction':arr1 = ['文库构建', '上机']; break
+        case 'expLibconstruction': ar r1 = ['文库构建', '上机']; break
       }
       return this.sample_workflow_step.filter(item => {
-         return arr1.indexOf(item.nameCn) > -1
+          urn arr1.indexOf(item.nameCn) > -1
       })
     }
   },
