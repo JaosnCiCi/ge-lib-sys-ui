@@ -69,7 +69,7 @@
           <vxe-table-column type="checkbox" align="center" width="55" />
           <vxe-table-column field="sampleIdLab" title="实验室号" align="center" />
           <vxe-table-column field="sampleTypeName" title="样本类型" align="center" />
-          <vxe-table-column
+          <!-- <vxe-table-column
             v-if="step == 'expExtraction'"
             :edit-render="{
               name: '$select',
@@ -93,7 +93,7 @@
                 />
               </vxe-select>
             </template>
-          </vxe-table-column>
+          </vxe-table-column> -->
           <vxe-table-column
             :edit-render="{
               name: '$select',
@@ -141,7 +141,7 @@
 </template>
 
 <script>
-imp ort { values } from 'xe-utils/methods'
+import { values } from 'xe-utils/methods'
 import { createNamespacedHelpers } from 'vuex'
 const {
   mapState: mapStateU,
