@@ -360,11 +360,12 @@ export default {
       }
       if (this.step == 'expExtraction') {
         arr.forEach(item => {
-          if (item.typeCode !== 'P') {
-            item.isTwiceCfDna = ''
-          } else {
-            item.isTwiceCfDna = '1'
-          }
+          item.isTwiceCfDna = '0' // 二次洗脱设为否
+          // if (item.typeCode !== 'P') {
+          //   item.isTwiceCfDna = ''
+          // } else {
+          //   item.isTwiceCfDna = '1'
+          // }
         })
       }
       this.dividedNextTableData = arr
