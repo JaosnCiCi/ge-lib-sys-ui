@@ -8,7 +8,6 @@
       title="样本分管"
       center
     >
-      <!-- button -->
       <el-row style="display:flex">
         <el-col :span="3" :offset="1">
           <el-dropdown @command="handlesample_workflow">
@@ -69,7 +68,7 @@
           <vxe-table-column type="checkbox" align="center" width="55" />
           <vxe-table-column field="sampleIdLab" title="实验室号" align="center" />
           <vxe-table-column field="sampleTypeName" title="样本类型" align="center" />
-          <!-- <vxe-table-column
+          <vxe-table-column
             v-if="step == 'expExtraction'"
             :edit-render="{
               name: '$select',
@@ -93,7 +92,7 @@
                 />
               </vxe-select>
             </template>
-          </vxe-table-column> -->
+          </vxe-table-column>
           <vxe-table-column
             :edit-render="{
               name: '$select',
@@ -107,22 +106,88 @@
           >
             <template slot-scope="scope">{{ scope.row.lastStep | getDirName(sample_workflow_step) }}</template>
             <template v-slot:edit="scope">
-              <el-select
+              <vxe-select
                 v-if="scope.row.isUltrafrac == '1' ||scope.row.isUltrafrac == null"
                 v-model="scope.row.lastStep"
                 placeholder="最后步骤"
+                @change="changeLastStep(scope.row)"
               >
-                <el-option
+                <vxe-option
                   v-for="item in sample_workflow1"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
                   :disabled="item.isValid=='0'"
                 />
-              </el-select>
-              <el-select v-else v-model="scope.row.lastStep" placeholder="最后步骤">
-                <el-option
+              </vxe-select>
+              <vxe-select
+                v-else
+                v-model="scope.row.lastStep"
+                placeholder="最后步骤"
+                @change="changeLastStep(scope.row)"
+              >
+                <vxe-option
                   v-for="item in sample_workflow"
+                  :key="item.code"
+                  :label="item.nameCn"
+                  :value="item.code"
+                  :disabled="item.isValid=='0'"
+                />
+              </vxe-select>
+            </template>
+          </vxe-table-column>
+
+          <vxe-table-column
+            v-if="step == 'expExtraction'"
+            :edit-render="{}"
+            field="libconstructionType"
+            title="建库类型"
+            align="center"
+            header-class-name="column_header_edit"
+          >
+            <template
+              slot-scope="scope"
+            >{{ scope.row.libconstructionType | getDirName(libconstruction_type) }}</template>
+            <template v-slot:edit="scope">
+              <vxe-select v-model="scope.row.libconstructionType" placeholder="请选择">
+                <vxe-option
+                  v-for="item in libconstruction_type"
+                  :key="item.code"
+                  :label="item.nameCn"
+                  :value="item.code"
+                  :disabled="item.isValid=='0'"
+                />
+              </vxe-select>
+            </template>
+          </vxe-table-column>
+          <vxe-table-column
+            v-if="step == 'expExtraction'||step == 'expLibconstruction'"
+            :edit-render="{
+                name: '$input',
+                autoselect:true,
+                immediate: true,
+                props: { type: 'number' ,clearable: true, maxlength: '300',controls:false },
+              }"
+            field="preinstallThroughput"
+            label="预设通量"
+            header-class-name="column_header_edit"
+            align="center"
+          />
+          <vxe-table-column
+            v-if="step == 'expExtraction'||step == 'expLibconstruction'"
+            :edit-render="{}"
+            field="throughputUnit"
+            label="通量单位"
+            header-class-name="column_header_edit"
+            align="center"
+          >
+            <template
+              slot-scope="scope"
+            >{{ scope.row.throughputUnit | getDirName(throughput_unit) }}</template>
+            <template v-slot:edit="scope">
+              <el-select v-model="scope.row.throughputUnit" placeholder="请选择">
+                <el-option
+                  v-for="item in throughput_unit"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
@@ -147,7 +212,7 @@ const {
   mapState: mapStateU,
   mapActions: mapActionsU
 } = createNamespacedHelpers('difeiUtil')
-import batchEntity from '../../../mixins/batchEntity'
+import batchEntity from '../../../miXin/batchEntity'
 export default {
   mixins: [batchEntity],
   props: {
@@ -174,7 +239,7 @@ export default {
       default: function () {
         return ''
       }
-    }
+    },
   },
   data () {
     var validatePass = (rule, value, callback) => {
@@ -209,38 +274,51 @@ export default {
     }
   },
   created () {
-    var baseArr = ['sample_workflow_step', 'is_ultrafrac']
+    var baseArr = ['sample_workflow_step', 'is_ultrafrac', 'libconstruction_type', 'throughput_unit']
     baseArr.map(item => {
       this.getBasicDir(item)
     })
   },
   computed: {
-    ...mapStateU(['is_ultrafrac', 'sample_workflow_step']),
+    ...mapStateU(['is_ultrafrac', 'sample_workflow_step', 'libconstruction_type', 'throughput_unit']),
     sample_workflow: function () {
-      var arr1 = []
-      switch (this.step) {
-        case 'expExtraction': arr1 = ['核酸提取', '文库构建', '上机']; break
-        case 'expUltrafrac':
-        case 'expLibconstruction': arr1 = ['文库构建', '上机']; break
-        case 'expPooling':
-        case 'expLibquant':
-        case 'expSequencing': arr1 = ['上机']; break
+      var arr = []
+      if (this.step == 'expExtraction') {
+        var arr1 = ['核酸提取', '文库构建', '上机']
+      } else if (this.step == 'expUltrafrac') {
+        var arr1 = ['文库构建', '上机']
+      } else if (this.step == 'expLibconstruction') {
+        var arr1 = ['文库构建', '上机']
+      } else if (this.step == 'expPooling') {
+        var arr1 = ['上机']
+      } else if (this.step == 'expLibquant') {
+        var arr1 = ['上机']
+      } else if (this.step == 'expSequencing') {
+        var arr1 = ['上机']
       }
-      return this.sample_workflow_step.filter(item => {
-        return arr1.indexOf(item.nameCn) > -1
+      this.sample_workflow_step.forEach(item => {
+        if (arr1.indexOf(item.nameCn) !== -1) {
+          arr.push(item)
+        }
       })
+      return arr
     },
     sample_workflow1: function () {
-      var arr1 = []
-      switch (this.step) {
-        case 'expExtraction': arr1 = ['核酸提取', '文库构建', '上机']; break
-        case 'expUltrafrac':
-        case 'expLibconstruction': arr1 = ['文库构建', '上机']; break
+      var arr = []
+      if (this.step == 'expExtraction') {
+        var arr1 = ['核酸提取', '文库构建', '上机']
+      } else if (this.step == 'expUltrafrac') {
+        var arr1 = ['文库构建', '上机']
+      } else if (this.step == 'expLibconstruction') {
+        var arr1 = ['文库构建', '上机']
       }
-      return this.sample_workflow_step.filter(item => {
-        return arr1.indexOf(item.nameCn) > -1
+      this.sample_workflow_step.forEach(item => {
+        if (arr1.indexOf(item.nameCn) !== -1) {
+          arr.push(item)
+        }
       })
-    }
+      return arr
+    },
   },
   methods: {
     ...mapActionsU(['getBasicDir', 'separteFromItemTable']),
@@ -326,8 +404,28 @@ export default {
         })
         return
       }
+      if (this.step == 'expExtraction') {
+        this.selection.map(item => {
+          item.libconstructionType = ''
+          if (command == 'sequencing') {
+            item.throughputUnit = '04'
+          } else {
+            item.throughputUnit = ''
+          }
+        })
+      }
+      if (this.step == 'expLibconstruction') {
+        this.selection.map(item => {
+          if (command == 'sequencing') {
+            item.throughputUnit = '04'
+          } else {
+            item.throughputUnit = ''
+          }
+        })
+      }
       this.selection.map(item => {
         item.lastStep = command
+        item.preinstallThroughput = ''
       })
     },
     handleIsUltrafrac (command) {
@@ -396,6 +494,30 @@ export default {
         if (item.lastStep == null || item.lastStep == '') {
           this.$set(item, 'lastStepError', true)
           error = true
+        } else {
+          this.$set(item, 'lastStepError', false)
+        }
+        if (this.step == 'expExtraction') {
+          if ((item.lastStep == 'libconstruction' || item.lastStep == 'sequencing') && (item.libconstructionType == null || item.libconstructionType == '')) {
+            this.$set(item, 'libconstructionTypeError', true)
+            error = true
+          } else {
+            this.$set(item, 'libconstructionTypeError', false)
+          }
+        }
+        if (this.step == 'expLibconstruction' || this.step == 'expExtraction') {
+          if (item.lastStep == 'sequencing') {
+            if (item.preinstallThroughput !== '') {
+              if (item.preinstallThroughput >= 0) {
+                this.$set(item, 'preinstallThroughputError', false)
+              } else {
+                this.$set(item, 'preinstallThroughputError', true)
+                error = true
+              }
+            } else {
+              this.$set(item, 'preinstallThroughputError', false)
+            }
+          }
         }
       })
       if (error) {
@@ -453,7 +575,35 @@ export default {
       if (column.property == 'isTwiceCfDna' && row.typeCode !== 'P') {
         return false
       }
+      if (this.step == 'expExtraction') {
+        if ((column.property == 'libconstructionType') && row.lastStep !== 'libconstruction' && row.lastStep !== 'sequencing') {
+          return false
+        }
+        if ((column.property == 'throughputUnit' || column.property == 'preinstallThroughput') && row.lastStep !== 'sequencing') {
+          return false
+        }
+      }
+      if (this.step == 'expLibconstruction') {
+        if ((column.property == 'throughputUnit' || column.property == 'preinstallThroughput') && row.lastStep !== 'sequencing') {
+          return false
+        }
+      }
+      // if (column.property == 'isUltrafrac' && this.step == 'expUltrafrac') {
+      //   return false
+      // }
       return true
+    },
+    changeLastStep (row) {
+      console.log(row)
+      if (this.step == 'expExtraction') {
+        row.libconstructionType = ''
+      }
+      row.preinstallThroughput = ''
+      if (row.lastStep == 'sequencing') {
+        row.throughputUnit = '04'
+      } else {
+        row.throughputUnit = ''
+      }
     }
   }
 }
