@@ -212,7 +212,7 @@ const {
   mapState: mapStateU,
   mapActions: mapActionsU
 } = createNamespacedHelpers('difeiUtil')
-import batchEntity from '../../../miXin/batchEntity'
+import batchEntity from '../../../mixins/batchEntity'
 export default {
   mixins: [batchEntity],
   props: {
