@@ -185,15 +185,15 @@
               slot-scope="scope"
             >{{ scope.row.throughputUnit | getDirName(throughput_unit) }}</template>
             <template v-slot:edit="scope">
-              <el-select v-model="scope.row.throughputUnit" placeholder="请选择">
-                <el-option
+              <vxe-select v-model="scope.row.throughputUnit" placeholder="请选择">
+                <vxe-option
                   v-for="item in throughput_unit"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
                   :disabled="item.isValid=='0'"
                 />
-              </el-select>
+              </vxe-select>
             </template>
           </vxe-table-column>
         </vxe-table>
