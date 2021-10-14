@@ -45,13 +45,6 @@
         <el-button type="primary" class="border_size" size="mini" @click="judge"
           >批量粘贴盒内位置</el-button
         >
-        <el-button
-          type="primary"
-          class="border_size"
-          size="mini"
-          @click="drawInfolist"
-          >带出库位信息</el-button
-        >
 
         <el-button
           type="primary"
@@ -60,6 +53,14 @@
           @click="inputTextLimsVisible = true"
           >批量选中样本</el-button
         >
+        <el-button
+          type="primary"
+          class="border_size"
+          size="mini"
+          @click="drawInfolist"
+          >带出库位信息</el-button
+        >
+
         <div style="float: right">
           <v-select-count :selection="selectTable" :total="row1.length" />
         </div>
@@ -288,8 +289,10 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapState: mapStateU, mapActions: mapActionsU } =
-  createNamespacedHelpers('difeiUtil')
+const {
+  mapState: mapStateU,
+  mapActions: mapActionsU,
+} = createNamespacedHelpers('difeiUtil')
 const { mapActions: mapActionsO } = createNamespacedHelpers('orderRecod')
 import inputTextLimsDialog from '../../inputTextLimsDialog'
 import boxSearch from '../../boxSearch'
@@ -372,6 +375,9 @@ export default {
 
       this.row1 = this.row.filter((item) => {
         return item.submitStatus == '02'
+      })
+      this.row1.forEach((item) => {
+        item.targetStorageType = '01'
       })
       this.row2 = this.row.filter((item) => {
         return item.submitStatus == '01'
