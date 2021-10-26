@@ -11,10 +11,17 @@
       class="dialog"
       @close="handelCancel"
     >
-      <div v-if="row1.length > 0" style="font-size: 15px">
-        <div style="margin: 10px 0">以下样本入库，请填写相关库位信息</div>
+      <div
+        v-if="row1.length > 0"
+        style="font-size: 15px;"
+      >
+        <div style="margin: 10px 0;">以下样本入库，请填写相关库位信息</div>
         <el-dropdown @command="handleCommand">
-          <el-button type="primary" class="border_size" size="mini">
+          <el-button
+            type="primary"
+            class="border_size"
+            size="mini"
+          >
             目标库位类型
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
@@ -23,9 +30,8 @@
               v-for="item in deposit_type"
               :key="item.code"
               :command="item.code"
-              :disabled="item.isValid == '0'"
-              >{{ item.nameCn }}</el-dropdown-item
-            >
+              :disabled="item.isValid=='0'"
+            >{{ item.nameCn }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-button
@@ -33,38 +39,40 @@
           class="border_size"
           size="mini"
           @click="showDialog_Sample"
-          >选择样本盒</el-button
-        >
+        >选择样本盒</el-button>
         <el-button
           type="primary"
           class="border_size"
           size="mini"
           @click="showDialog_Box"
-          >批量粘贴样本盒</el-button
-        >
-        <el-button type="primary" class="border_size" size="mini" @click="judge"
-          >批量粘贴盒内位置</el-button
-        >
+        >批量粘贴样本盒</el-button>
+        <el-button
+          type="primary"
+          class="border_size"
+          size="mini"
+          @click="judge"
+        >批量粘贴盒内位置</el-button>
 
         <el-button
           type="primary"
           class="border_size"
           size="mini"
           @click="inputTextLimsVisible = true"
-          >批量选中样本</el-button
-        >
+        >批量选中样本</el-button>
         <el-button
           type="primary"
           class="border_size"
           size="mini"
           @click="drawInfolist"
-          >带出库位信息</el-button
-        >
+        >带出库位信息</el-button>
 
-        <div style="float: right">
-          <v-select-count :selection="selectTable" :total="row1.length" />
+        <div style="float:right">
+          <v-select-count
+            :selection="selectTable"
+            :total="row1.length"
+          />
         </div>
-        <div style="margin: 10px" />
+        <div style="margin:10px" />
 
         <vxe-table
           ref="xtable"
@@ -74,7 +82,7 @@
             autoselect: true,
             mode: 'cell',
             activeMethod: activeMethod,
-            showIcon: false,
+            showIcon: false
           }"
           :keyboard-config="{
             isClip: true,
@@ -84,7 +92,7 @@
             isEnter: true,
             isTab: true,
             isEdit: true,
-            editMethod: editMethod,
+            editMethod: editMethod
           }"
           :cell-class-name="tableCellClassName"
           max-height="420"
@@ -95,7 +103,11 @@
           @checkbox-all="handleSelectionChange"
           @checkbox-change="handleSelectionChange"
         >
-          <vxe-table-column type="checkbox" align="center" width="50" />
+          <vxe-table-column
+            type="checkbox"
+            align="center"
+            width="50"
+          />
           <vxe-table-column
             field="sampleIdLims"
             label="LIMS号"
@@ -103,16 +115,14 @@
             width="150"
           />
           <vxe-table-column
-            v-if="
-              !['libquant', 'sequencing', 'sequencingAdjusted'].includes(step)
-            "
+            v-if="!['libquant','sequencing','sequencingAdjusted'].includes(step)"
             label="实验室号"
             align="center"
             width="200"
             field="sampleIdLab"
           />
           <vxe-table-column
-            v-if="['sequencing', 'sequencingAdjusted'].includes(step)"
+            v-if="['sequencing','sequencingAdjusted'].includes(step)"
             label="上机批次号（实验）"
             align="center"
             width="150"
@@ -131,7 +141,7 @@
               name: '$select',
               options: deposit_type,
               optionProps: { value: 'code', label: 'nameCn' },
-              events: { change: handleStorageType },
+              events:{change:handleStorageType}
             }"
             field="targetStorageType"
             header-class-name="column_header_edit"
@@ -143,15 +153,19 @@
             label="目标库位"
             align="center"
           />
-          <vxe-table-column field="boxName" label="目标样本盒" align="center" />
+          <vxe-table-column
+            field="boxName"
+            label="目标样本盒"
+            align="center"
+          />
           <vxe-table-column
             :edit-render="{
               name: '$input',
-              autoselect: true,
+              autoselect:true,
               immediate: true,
               props: {
                 clearable: true,
-                maxlength: 300,
+                maxlength:300
               },
             }"
             field="positionInBox"
@@ -162,41 +176,46 @@
           />
         </vxe-table>
       </div>
-      <div v-if="row2.length > 0" style="margin: 20px; font-size: 15px">
+      <div
+        v-if="row2.length > 0"
+        style="margin: 20px;font-size: 15px;"
+      >
         <div>以下样本还未提交，请先进行提交操作，具体如下：</div>
         <div class="rowClass">
           <!-- <div v-for="(item, index) in row2" :key="index">{{ item.sampleIdLims }}</div> -->
           <div
-            v-if="row2.length <= 6"
-            style="
-              display: flex;
-              justify-content: space-between;
-              flex-wrap: wrap;
-            "
+            v-if="row2.length <=6"
+            style="display: flex;justify-content: space-between;flex-wrap: wrap;"
           >
             <span
               v-for="(item, idx) of row2"
               :key="idx"
-              style="padding: 0 20px"
-              >{{ item.sampleIdLims + ' ' }}</span
-            >
+              style="padding:0 20px"
+            >{{ item.sampleIdLims + " " }}</span>
           </div>
           <div v-else>
-            <v-showMore style="margin-top: 20px" :content="row2" />
+            <v-showMore
+              style="margin-top: 20px"
+              :content="row2"
+            />
           </div>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="handelCancel">取 消</el-button>
         <el-button
           v-if="row1.length == 0 && row2.length !== 0"
           type="primary"
           @click="handelEnsure"
-          >确 定</el-button
-        >
-        <el-button v-else type="primary" @click="handelEnsure"
-          >下一步</el-button
-        >
+        >确 定</el-button>
+        <el-button
+          v-else
+          type="primary"
+          @click="handelEnsure"
+        >下一步</el-button>
       </div>
     </el-dialog>
     <v-boxSearch
@@ -229,15 +248,13 @@
       center
       class="dialog"
       @close="
-        query.nextProcessorName = ''
-        query.nextProcessorId = ''
+        query.nextProcessorName = '';
+        query.nextProcessorId = '';
       "
     >
       <el-row>
         <div class="item-group">
-          <div class="item-left">
-            以下{{ arr2.length }}个样本即将入永久库，请选择实验室审核人：
-          </div>
+          <div class="item-left">以下{{ arr2.length }}个样本即将入永久库，请选择实验室审核人：</div>
           <div class="item-right">
             <el-select
               v-model="query.nextProcessorId"
@@ -254,28 +271,30 @@
                 :key="item.username"
                 :label="item.usernameCn"
                 :value="item.username"
-                :disabled="item.isValid == '0'"
+                :disabled="item.isValid=='0'"
               />
             </el-select>
           </div>
         </div>
       </el-row>
       <el-row>
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin-top: 20px;
-          "
-        >
-          <div v-for="item in arr2" :key="item">{{ item.sampleIdLims }}</div>
+        <div style="display: flex;flex-wrap: wrap;justify-content: space-around;margin-top: 20px;">
+          <div
+            v-for="item in arr2"
+            :key="item"
+          >{{ item.sampleIdLims }}</div>
         </div>
       </el-row>
 
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="handelBack">上一步</el-button>
-        <el-button type="primary" @click="handelNextProcessor">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="handelNextProcessor"
+        >确 定</el-button>
       </div>
     </el-dialog>
     <!-- 批量选中样本 -->
@@ -288,12 +307,16 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
+import {
+  createNamespacedHelpers
+} from 'vuex'
 const {
   mapState: mapStateU,
-  mapActions: mapActionsU,
+  mapActions: mapActionsU
 } = createNamespacedHelpers('difeiUtil')
-const { mapActions: mapActionsO } = createNamespacedHelpers('orderRecod')
+const {
+  mapActions: mapActionsO
+} = createNamespacedHelpers('orderRecod')
 import inputTextLimsDialog from '../../inputTextLimsDialog'
 import boxSearch from '../../boxSearch'
 import positionBoxCopy from '../../positionBoxCopy'
@@ -308,20 +331,20 @@ export default {
       type: Array,
       default: () => {
         return []
-      },
+      }
     },
     sourceTaskId: {
       type: Array,
       default: () => {
         return []
-      },
+      }
     },
     step: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
-  data() {
+  data () {
     return {
       row1: [],
       row2: [],
@@ -335,37 +358,33 @@ export default {
       dialogNext: false,
       query: {
         nextProcessorName: '',
-        nextProcessorId: '',
+        nextProcessorId: ''
       },
       loading: false,
       inputTextLimsVisible: false,
-      sampleBoxCopyVisible: false,
+      sampleBoxCopyVisible: false
     }
   },
   computed: {
-    ...mapStateU(['deposit_type']),
+    ...mapStateU(['deposit_type'])
   },
   components: {
     'v-boxSearch': boxSearch,
     'v-positionBoxCopy': positionBoxCopy,
     'v-inputTextLimsDialog': inputTextLimsDialog,
     'v-showMore': showMore,
-    'v-dialogSampleBoxCopy': dialogSampleBoxCopy,
+    'v-dialogSampleBoxCopy': dialogSampleBoxCopy
   },
-  mounted() {
+  mounted () {
     var baseArr = ['deposit_type']
-    baseArr.map((item) => {
+    baseArr.map(item => {
       this.getBasicDir(item)
     })
   },
   methods: {
-    ...mapActionsU([
-      'getBasicDir',
-      'itemTableStorageSubmit',
-      'lastWithdrawInfolist',
-    ]),
+    ...mapActionsU(['getBasicDir', 'itemTableStorageSubmit', 'lastWithdrawInfolist']),
     ...mapActionsO(['userInfo']),
-    doAfterShow() {
+    doAfterShow () {
       this.arr1 = []
       this.arr2 = []
       this.selectTable = []
@@ -373,27 +392,27 @@ export default {
       this.experimenterList = []
       this.sampleDepositTaskTError = ''
 
-      this.row1 = this.row.filter((item) => {
+      this.row1 = this.row.filter(item => {
         return item.submitStatus == '02'
       })
-      this.row1.forEach((item) => {
-        item.targetStorageType = '01'
+      this.row1.forEach(item => {
+        item.targetStorageType = item.targetStorageType == null || item.targetStorageType == undefined || item.targetStorageType == '' ? '01' : item.targetStorageType
       })
-      this.row2 = this.row.filter((item) => {
+      this.row2 = this.row.filter(item => {
         return item.submitStatus == '01'
       })
       this.query.nextProcessorName = ''
       this.query.nextProcessorId = ''
     },
-    handelCancel() {
+    handelCancel () {
       this.$refs.xtable && this.$refs.xtable.clearCheckboxRow()
       this.$emit('handelCancel')
       this.dialogVisible = false
       this.dialogNext = false
     },
-    handelEnsure() {
+    handelEnsure () {
       var error = false
-      this.row1.forEach((item) => {
+      this.row1.forEach(item => {
         this.$set(item, 'targetStorageTypeError', false)
         this.$set(item, 'storageNameError', false)
         this.$set(item, 'boxNameError', false)
@@ -417,13 +436,13 @@ export default {
       if (error) {
         this.$message({
           type: 'error',
-          message: '请完善页面信息',
+          message: '请完善页面信息'
         })
         this.updateTable()
         return
       }
-      this.arr1 = this.row1.filter((item) => item.targetStorageType == '01')
-      this.arr2 = this.row1.filter((item) => item.targetStorageType == '02')
+      this.arr1 = this.row1.filter(item => item.targetStorageType == '01')
+      this.arr2 = this.row1.filter(item => item.targetStorageType == '02')
       if (this.row1.length == 0 && this.row2.length !== 0) {
         this.handelCancel()
         return
@@ -434,18 +453,18 @@ export default {
       }
       this.handelNextProcessor()
     },
-    handleSelectionChange(data) {
+    handleSelectionChange (data) {
       this.selectTable = data.records
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据',
+          message: '请至少选择一条数据'
         })
         return false
       }
-      this.selectTable.map((x) => {
+      this.selectTable.map(x => {
         if (command == '02') {
           this.$set(x, 'storageId', '')
           this.$set(x, 'boxId', '')
@@ -456,98 +475,97 @@ export default {
         this.$set(x, 'targetStorageType', command)
       })
     },
-    showDialog_Sample() {
+    showDialog_Sample () {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据',
+          message: '请至少选择一条数据'
         })
         return false
       }
       var arr1 = this.selectTable.filter(
-        (item) =>
-          item.targetStorageType !== null && item.targetStorageType !== ''
+        item => item.targetStorageType !== null && item.targetStorageType !== ''
       )
       if (arr1.length == 0) {
         this.$message({
           type: 'error',
-          message: '请先填写目标库位类型',
+          message: '请先填写目标库位类型'
         })
         return
       }
-      var arr2 = arr1.filter((item) => item.targetStorageType == '01')
+      var arr2 = arr1.filter(item => item.targetStorageType == '01')
       if (arr2.length == 0) {
         this.$message({
           type: 'error',
-          message: '请为入临时库的样本选择样本盒',
+          message: '请为入临时库的样本选择样本盒'
         })
         return
       }
       this.courseTable = arr2
       this.$refs.dialogSearchSapleBox.dialogVisible = true
     },
-    showDialog_Box() {
+    showDialog_Box () {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据',
+          message: '请至少选择一条数据'
         })
         return false
       }
       var arr1 = this.selectTable.filter(
-        (item) =>
-          item.targetStorageType !== null && item.targetStorageType !== ''
+        item => item.targetStorageType !== null && item.targetStorageType !== ''
       )
       if (arr1.length == 0) {
         this.$message({
           type: 'error',
-          message: '请先填写目标库位类型',
+          message: '请先填写目标库位类型'
         })
         return
       }
-      var arr2 = arr1.filter((item) => item.targetStorageType == '01')
+      var arr2 = arr1.filter(item => item.targetStorageType == '01')
       if (arr2.length == 0) {
         this.$message({
           type: 'error',
-          message: '请为入临时库的样本粘贴样本盒',
+          message: '请为入临时库的样本粘贴样本盒'
         })
         return
       }
       this.courseTable = arr2
       this.sampleBoxCopyVisible = true
     },
-    doSure(query) {
-      this.courseTable.forEach((item) => {
+    doSure (query) {
+      this.courseTable.forEach(item => {
         item.storageId = query.storageId
         item.storageName = query.storageName
         item.boxId = query.boxId
         item.boxName = query.boxName
       })
     },
-    judge() {
+    judge () {
       var arr1 = this.row1.filter(
-        (item) =>
-          item.targetStorageType !== null && item.targetStorageType !== ''
+        item => item.targetStorageType !== null && item.targetStorageType !== ''
       )
       if (arr1.length == 0) {
         this.$message({
           type: 'error',
-          message: '请先填写目标库位类型',
+          message: '请先填写目标库位类型'
         })
         return
       }
-      var arr2 = arr1.filter((item) => item.targetStorageType == '01')
+      var arr2 = arr1.filter(item => item.targetStorageType == '01')
       if (arr2.length == 0) {
         this.$message({
           type: 'error',
-          message: '请为入临时库的样本粘贴盒内位置',
+          message: '请为入临时库的样本粘贴盒内位置'
         })
         return
       }
       this.courseTable = arr2
       this.inputTextAreaDialogVisible = true
     },
-    handleStorageType({ row }) {
+    handleStorageType ({
+      row
+    }) {
       if (row.targetStorageType == '02') {
         row.storageId = ''
         row.boxId = ''
@@ -556,7 +574,12 @@ export default {
         row.positionInBox = ''
       }
     },
-    tableCellClassName({ row, column, rowIndex, columnIndex }) {
+    tableCellClassName ({
+      row,
+      column,
+      rowIndex,
+      columnIndex
+    }) {
       if (column.property) {
         var item = column.property + 'Error'
         if (row[item] == true) {
@@ -568,19 +591,19 @@ export default {
       }
       return ''
     },
-    updateTable() {
+    updateTable () {
       this.row1.push({})
       this.row1.pop()
     },
-    handleAddBoxPosition() {
+    handleAddBoxPosition () {
       this.updateTable()
     },
-    handleSelect(item) {
+    handleSelect (item) {
       console.log(window.userid, item)
       if (window.userid == item) {
         this.$message({
           type: 'error',
-          message: '审核人不可选择自己',
+          message: '审核人不可选择自己'
         })
         this.query.nextProcessorId = ''
         this.query.nextProcessorName = ''
@@ -595,14 +618,14 @@ export default {
         'usernameCn'
       )
     },
-    querySearchAsync(queryString = '') {
+    querySearchAsync (queryString = '') {
       if (queryString !== '') {
         this.loading = true
 
         var params = {
-          name: queryString,
+          name: queryString
         }
-        this.userInfo(params).then((res) => {
+        this.userInfo(params).then(res => {
           if (res.status == '2000') {
             this.loading = false
             this.experimenterList = res.list
@@ -612,18 +635,18 @@ export default {
         this.experimenterList = []
       }
     },
-    handelBack() {
+    handelBack () {
       this.query.nextProcessorName = ''
       this.query.nextProcessorId = ''
       this.dialogNext = false
     },
-    handelNextProcessor() {
+    handelNextProcessor () {
       this.sampleDepositTaskTError = ''
       if (this.arr2.length != 0 && this.query.nextProcessorId == '') {
         this.sampleDepositTaskTError = '请填写实验室审核人'
         this.$message({
           message: '请填写实验室审核人',
-          type: 'error',
+          type: 'error'
         })
         return
       }
@@ -635,7 +658,7 @@ export default {
         obj = {}
         obj.sampleDepositTaskT = {
           depositType: '01',
-          sourceTaskId: this.sourceTaskId,
+          sourceTaskId: this.sourceTaskId
         }
         obj.sampleDepositItemTS = this.arr1
         params.sampleDepositOperationVO.push(obj)
@@ -646,18 +669,18 @@ export default {
           depositType: '02',
           sourceTaskId: this.sourceTaskId,
           nextProcessorId: this.query.nextProcessorId,
-          nextProcessorName: this.query.nextProcessorName,
+          nextProcessorName: this.query.nextProcessorName
         }
         obj.sampleDepositItemTS = this.arr2
         params.sampleDepositOperationVO.push(obj)
       }
       console.log(params)
-      this.itemTableStorageSubmit(params).then((res) => {
+      this.itemTableStorageSubmit(params).then(res => {
         switch (res.status) {
           case '2000':
             this.$message({
               message: '样本入库成功',
-              type: 'success',
+              type: 'success'
             })
             this.$emit('initialize')
             this.handelCancel()
@@ -667,36 +690,34 @@ export default {
             break
           case 'LIMSBOX102':
             this.$message({
-              message:
-                '当前入库的部分样本包装量之和大于选中的样本盒剩余孔位数量，请核实后再提交。' +
+              message: '当前入库的部分样本包装量之和大于选中的样本盒剩余孔位数量，请核实后再提交。' +
                 res.message.replace('[', '').replace(']', ''),
-              type: 'error',
+              type: 'error'
             })
             break
           case 'LIMSBOX103':
             this.$message({
-              message:
-                '当前入库的部分样本包装量之和大于选中的样本盒剩余孔位数量，请核实后再提交。',
-              type: 'error',
+              message: '当前入库的部分样本包装量之和大于选中的样本盒剩余孔位数量，请核实后再提交。',
+              type: 'error'
             })
             break
           default:
             this.$message({
               message: '操作失败，请重新再试',
-              type: 'error',
+              type: 'error'
             })
             break
         }
       })
     },
-    confirmSelect(e) {
+    confirmSelect (e) {
       var arr = []
       var arr1 = []
       var err = []
-      this.row1.forEach((x) => {
+      this.row1.forEach(x => {
         arr.push(x.sampleIdLims)
       })
-      e.forEach((item) => {
+      e.forEach(item => {
         if (arr.indexOf(item) == -1) {
           err.push(item)
         } else {
@@ -704,8 +725,8 @@ export default {
         }
       })
       console.log(err, arr1)
-      this.row1.forEach((x) => {
-        arr1.forEach((y) => {
+      this.row1.forEach(x => {
+        arr1.forEach(y => {
           if (x.sampleIdLims == y) {
             arr.push(x)
           }
@@ -714,23 +735,28 @@ export default {
       if (err.length !== 0) {
         this.$message({
           type: 'error',
-          message: '部分或全部的LIMS未匹配到对应到内容，请检查',
+          message: '部分或全部的LIMS未匹配到对应到内容，请检查'
         })
       }
       this.selectTable = arr
       this.$refs.xtable.clearCheckboxRow()
       // this.$refs.xTable.setCheckboxRow(arr, true)
-      arr.forEach((item) => {
+      arr.forEach(item => {
         this.$refs.xtable.toggleCheckboxRow(item, true)
       })
     },
-    sortByDate(obj1, obj2) {
+    sortByDate (obj1, obj2) {
       const val1 = obj1.positionInBox
       const val2 = obj2.positionInBox
       return val1 - val2
     },
     // 是否可以编辑
-    activeMethod({ row, rowIndex, column, columnIndex }) {
+    activeMethod ({
+      row,
+      rowIndex,
+      column,
+      columnIndex
+    }) {
       if (column.property == 'positionInBox') {
         console.log(row)
         if (row.targetStorageType !== '01') {
@@ -740,25 +766,25 @@ export default {
       }
       return true
     },
-    drawInfolist() {
+    drawInfolist () {
       if (this.selectTable.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据',
+          message: '请至少选择一条数据'
         })
         return false
       }
       var list = []
-      this.selectTable.forEach((item) => {
+      this.selectTable.forEach(item => {
         list.push(item.sampleIdLims)
       })
       var params = {
-        list,
+        list
       }
-      this.lastWithdrawInfolist(params).then((res) => {
+      this.lastWithdrawInfolist(params).then(res => {
         if (res.status == '2000') {
-          this.selectTable.forEach((x) => {
-            var list = res.list.filter((y) => {
+          this.selectTable.forEach(x => {
+            var list = res.list.filter(y => {
               return x.sampleIdLims == y.sampleIdLims
             })
             if (list.length > 0) {
@@ -776,8 +802,8 @@ export default {
           this.$message.error('操作失败，请刷新页面再次尝试操作')
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
