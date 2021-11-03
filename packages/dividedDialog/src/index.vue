@@ -109,7 +109,6 @@
         <el-button @click="handleCancel">取 消</el-button>
         <el-button
           v-if="
-            step == 'expPooling' ||
               step == 'expLibquant' ||
               step == 'expSequencing'
           "
@@ -203,7 +202,8 @@ export default {
         ]
       },
       selection: [],
-      rowList: ['expUltrafrac', 'expLibconstruction']
+      rowList: ['expUltrafrac', 'expLibconstruction'],
+      orderObj: {}
     }
   },
   created () {
@@ -241,7 +241,7 @@ export default {
     }
   },
   methods: {
-    ...mapActionsU(['getBasicDir', 'separteFromItemTable']),
+    ...mapActionsU(['getBasicDir', 'separteFromItemTable', 'getOrderBySampleId']),
     doAfterShow() {
       this.dividedTableData = this.row
        this.selection = []
@@ -255,6 +255,27 @@ export default {
       if (this.taskType == 'TCR') {
         this.handleDividedNext()
       }
+      this.getOrderInfo()
+    },
+    // 通过lims号获取订单号和项目
+    getOrderInfo() {
+      const sampleIdLimsList = [] 
+      this.dividedTableData.map(item => {
+        sampleIdLimsList.push(item.sampleIdLims)
+      })
+
+      this.getOrderBySampleId({
+        sampleIdLimsList
+      }).then(res => {
+        if (res.status === '2000') {
+          res.list.map(item => {
+            this.orderObj[item.sampleIdLims] = {
+              orderCode: item.orderCode,
+              orderProjectListStr: item.orderProjectListStr
+            }
+          })
+        } 
+      })
     },
     batch () {
       if (this.selection.length == 0) {
@@ -329,6 +350,19 @@ export default {
       }
       return error
     },
+    // 截取字符串并插入','
+    strInsert(str, length) {
+      let reg = new RegExp("\\w{1," + length + "}", "g");
+      let originList = str.match(reg);
+      const ignoreList = ['N001', 'N002', 'N003', 'N004'] //地点编码 过滤掉
+      let ma = []
+      originList.map(project => {
+        if (ignoreList.indexOf(project) === -1) {
+          ma.push(project)
+        }
+      })
+      return ma.join(",")
+    },
     handleDividedNext () {
       if (this.judgeRules()) {
         return
@@ -339,8 +373,21 @@ export default {
       var arr = []
       this.dividedTableData.forEach(item => {
         item.isUltrafrac = null
-        item.lastStep = ''
+        item.lastStep = this.step === 'expPooling' ? 'sequencing' : ''
+
         for (let index = 0; index < item.vitroNumber; index++) {
+           // 项目关联
+          const projectStr = item.sampleIdLab && item.sampleIdLab.split('-')[2]
+          item.originProject = this.strInsert(projectStr, 4)
+          item.newProject = item.originProject
+          item.basProjectInfoTList = item.originProject.split(',').map(item => {
+            return {
+              projectId: item
+            }
+          })
+          const orderInfo = this.orderObj[item.sampleIdLims]
+          item.orderCode = orderInfo.orderCode
+          item.orderProjectListStr = orderInfo.orderProjectListStr
           arr.push(JSON.parse(JSON.stringify(item)))
         }
       })

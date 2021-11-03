@@ -9,9 +9,17 @@
       center
     >
       <el-row style="display:flex">
-        <el-col :span="3" :offset="1">
+        <el-col
+          :span="3"
+          :offset="1"
+          v-if="step !== 'expPooling'"
+        >
           <el-dropdown @command="handlesample_workflow">
-            <el-button type="primary" class="border_size" size="mini">
+            <el-button
+              type="primary"
+              class="border_size"
+              size="mini"
+            >
               最后步骤
               <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
@@ -24,6 +32,17 @@
               >{{ item.nameCn }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+        </el-col>
+        <el-col
+          :span="3"
+          style="marginLeft: 14px"
+        >
+          <el-button
+            type="primary"
+            class="border_size"
+            size="mini"
+            @click="openProjectDialog"
+          >修改项目信息</el-button>
         </el-col>
       </el-row>
       <div style="margin-top:20px" />
@@ -39,7 +58,6 @@
             activeMethod: activeMethod,
             showIcon: false
           }"
-          :sort-config="{ sortMethod: handleSortChange,remote:true }"
           :checkbox-config="{ checkMethod: selectableRow ,trigger: 'row', highlight: true, range: true}"
           :keyboard-config="{
             isClip: true,
@@ -51,7 +69,7 @@
             isEdit: true,
             editMethod: editMethod
           }"
-          :scroll-x="{ gt: 10 }"
+          :scroll-x="{ gt: 20 }"
           :scroll-y="{ gt: 30 }"
           :cell-class-name="tableCellClassName"
           header-row-class-name="height_50"
@@ -62,12 +80,24 @@
           resizable
           @checkbox-change="handleSelectionChange"
           @checkbox-all="handleSelectionChange"
-          @sort-change="handleSortChange"
           @checkbox-range-change="handleSelectionChange"
         >
-          <vxe-table-column type="checkbox" align="center" width="55" />
-          <vxe-table-column field="sampleIdLab" title="实验室号" align="center" />
-          <vxe-table-column field="sampleTypeName" title="样本类型" align="center" />
+          <vxe-table-column
+            type="checkbox"
+            align="center"
+            width="55"
+          />
+          <vxe-table-column
+            field="sampleIdLab"
+            title="实验室号"
+            align="center"
+            sortable
+          />
+          <vxe-table-column
+            field="sampleTypeName"
+            title="样本类型"
+            align="center"
+          />
           <vxe-table-column
             v-if="step == 'expExtraction'"
             :edit-render="{
@@ -82,7 +112,10 @@
           >
             <template slot-scope="scope">{{ scope.row.isTwiceCfDna | getDirName(is_ultrafrac) }}</template>
             <template v-slot:edit="scope">
-              <vxe-select v-model="scope.row.isTwiceCfDna" placeholder="请选择">
+              <vxe-select
+                v-model="scope.row.isTwiceCfDna"
+                placeholder="请选择"
+              >
                 <vxe-option
                   v-for="item in is_ultrafrac"
                   :key="item.code"
@@ -145,11 +178,12 @@
             align="center"
             header-class-name="column_header_edit"
           >
-            <template
-              slot-scope="scope"
-            >{{ scope.row.libconstructionType | getDirName(libconstruction_type) }}</template>
+            <template slot-scope="scope">{{ scope.row.libconstructionType | getDirName(libconstruction_type) }}</template>
             <template v-slot:edit="scope">
-              <vxe-select v-model="scope.row.libconstructionType" placeholder="请选择">
+              <vxe-select
+                v-model="scope.row.libconstructionType"
+                placeholder="请选择"
+              >
                 <vxe-option
                   v-for="item in libconstruction_type"
                   :key="item.code"
@@ -181,11 +215,12 @@
             header-class-name="column_header_edit"
             align="center"
           >
-            <template
-              slot-scope="scope"
-            >{{ scope.row.throughputUnit | getDirName(throughput_unit) }}</template>
+            <template slot-scope="scope">{{ scope.row.throughputUnit | getDirName(throughput_unit) }}</template>
             <template v-slot:edit="scope">
-              <vxe-select v-model="scope.row.throughputUnit" placeholder="请选择">
+              <vxe-select
+                v-model="scope.row.throughputUnit"
+                placeholder="请选择"
+              >
                 <vxe-option
                   v-for="item in throughput_unit"
                   :key="item.code"
@@ -196,12 +231,46 @@
               </vxe-select>
             </template>
           </vxe-table-column>
+          <vxe-table-column
+            field="originProject"
+            title="原项目信息"
+            align="center"
+          />
+          <vxe-table-column
+            field="newProject"
+            title="分管后项目信息"
+            align="center"
+          />
+          <vxe-table-column
+            field="orderCode"
+            title="订单号"
+            align="center"
+            sortable
+          />
+          <vxe-table-column
+            field="orderProjectListStr"
+            title="订单项目"
+            align="center"
+          />
         </vxe-table>
       </el-row>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="sureDialogDividedNext">确定</el-button>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="sureDialogDividedNext"
+        >确定</el-button>
       </span>
     </el-dialog>
+    <select-project
+      v-if="showProject"
+      :visible="showProject"
+      :list="selectProjectList"
+      @save="saveProject"
+      @handelClosed="showProject = false"
+    />
   </div>
 </template>
 
@@ -213,6 +282,7 @@ const {
   mapActions: mapActionsU
 } = createNamespacedHelpers('difeiUtil')
 import batchEntity from '../../../mixins/batchEntity'
+import selectProject from './dialogSelectProject'
 export default {
   mixins: [batchEntity],
   props: {
@@ -241,6 +311,7 @@ export default {
       }
     },
   },
+  components: { selectProject },
   data () {
     var validatePass = (rule, value, callback) => {
       var reg = /^[1-9]*[0-9][0-9]*$/
@@ -270,7 +341,9 @@ export default {
         ]
       },
       selection: [],
-      rowList: ['expLibconstruction']
+      rowList: ['expLibconstruction'],
+      showProject: false,
+      selectProjectList: []
     }
   },
   created () {
@@ -311,6 +384,8 @@ export default {
         var arr1 = ['文库构建', '上机']
       } else if (this.step == 'expLibconstruction') {
         var arr1 = ['文库构建', '上机']
+      } else if (this.step == 'expPooling') {
+        var arr1 = ['上机']
       }
       this.sample_workflow_step.forEach(item => {
         if (arr1.indexOf(item.nameCn) !== -1) {
@@ -604,6 +679,42 @@ export default {
       } else {
         row.throughputUnit = ''
       }
+    },
+    openProjectDialog () {
+      if (this.selection.length == 0) {
+        this.$message({
+          type: 'error',
+          message: '请至少选择一条数据'
+        })
+        return
+      }
+      // 如果用户选中的样本属于超过一个订单，则提示“不同订单的样本无法批量修改项目信息，请确保选中的样本属于相同的订单。”
+      const orderList = []
+      this.selection.map(item => {
+        if (item.orderCode && orderList.indexOf(item.orderCode) === -1) {
+          orderList.push(item.orderCode)
+        }
+      })
+      if (orderList.length > 1) {
+        this.$message.error('不同订单的样本无法批量修改项目信息，请确保选中的样本属于相同的订单。')
+        return
+      }
+      this.selectProjectList = this.selection[0].orderProjectListStr.split(',').map(projectId => {
+        return {
+          projectId
+        }
+      })
+      this.showProject = true
+    },
+    saveProject (projectArr) {
+      const str = projectArr.map(project => {
+        return project.projectId
+      }).join(',')
+      this.selection.map(item => {
+        item.newProject = str
+        item.basProjectInfoTList = projectArr
+      })
+      this.showProject = false
     }
   }
 }
