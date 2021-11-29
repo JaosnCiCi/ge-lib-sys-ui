@@ -691,7 +691,7 @@ export default {
           case 'LIMSBOX102':
             this.$message({
               message: '当前入库的部分样本包装量之和大于选中的样本盒剩余孔位数量，请核实后再提交。' +
-                res.message.replace('[', '').replace(']', ''),
+                res.extra1.replace('[', '').replace(']', ''),
               type: 'error'
             })
             break
