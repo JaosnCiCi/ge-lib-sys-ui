@@ -223,7 +223,7 @@ export default {
       } else {
         var params = {
           name: 'orderProjectInfos',
-          type: '4028814a491876ea01491c12b2f3006a'
+          projectTypeCode: '02'
         }
         this.getOptimizeProject(params).then(res => {
           this.projects = res.list
@@ -317,7 +317,7 @@ export default {
       } else {
         var params = {
           name: 'orderProjectInfos',
-          type: '4028814a491876ea01491c12b2f3006a',
+          projectTypeCode: '02',
           id: this.query
         }
         this.getOptimizeProject(params).then(res => {

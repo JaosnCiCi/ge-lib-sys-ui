@@ -65,6 +65,12 @@
           size="mini"
           @click="drawInfolist"
         >带出库位信息</el-button>
+        <el-button
+          type="primary"
+          class="border_size"
+          size="mini"
+          @click="getLastWareInfo"
+        >带出最后库位</el-button>
 
         <div style="float:right">
           <v-select-count
@@ -107,6 +113,14 @@
             type="checkbox"
             align="center"
             width="50"
+          />
+          <vxe-table-column
+            v-if="['preparation','extraction','libconstruction'].includes(step)"
+            title="序号"
+            align="center"
+            :field="step === 'libconstruction' ? 'positionInOrifice' : 'sortNo'"
+            width="100"
+            show-overflow
           />
           <vxe-table-column
             field="sampleIdLims"
@@ -382,7 +396,7 @@ export default {
     })
   },
   methods: {
-    ...mapActionsU(['getBasicDir', 'itemTableStorageSubmit', 'lastWithdrawInfolist']),
+    ...mapActionsU(['getBasicDir', 'itemTableStorageSubmit', 'lastWithdrawInfolist', 'getLastWarePosition']),
     ...mapActionsO(['userInfo']),
     doAfterShow () {
       this.arr1 = []
@@ -802,6 +816,53 @@ export default {
           this.$message.error('操作失败，请刷新页面再次尝试操作')
         }
       })
+    },
+    // 带出最后库位信息
+    getLastWareInfo() {
+      if (this.selectTable.length == 0) {
+        this.$message({
+          type: 'error',
+          message: '请至少选择一条数据'
+        })
+        return false
+      }
+      let list = []
+      this.selectTable.forEach(item => {
+        list.push(item.sampleIdLims)
+      }) 
+      this.getLastWarePosition({list}).then(res => {
+        if (res.status == '2000') {
+          let checked = true
+          let sampleLists = {}
+          res.list.forEach(y => {
+              sampleLists[y.sampleIdLims] = y
+          })
+          this.selectTable.forEach(x => {
+              let sample = sampleLists[x.sampleIdLims]
+              if (sample) {
+                  x.targetStorageType = sample.storageType
+                  x.storageId = sample.storageId
+                  x.storageName = sample.storageName
+                  x.boxId = sample.boxId
+                  x.boxName = sample.boxName
+                  x.positionInBox = sample.positionInBox
+              } else {
+                  x.targetStorageType = '01'
+                  x.storageId = ''
+                  x.storageName = ''
+                  x.boxId = ''
+                  x.boxName = ''
+                  x.positionInBox = ''
+                  checked = false
+              }
+          })
+          if (!checked) {
+              this.showErrorMessage('部分样本未找到最后库位信息!')
+          }
+        } else {
+          this.$message.error('操作失败，请刷新页面再次尝试操作')
+        }
+      }).catch(() => {})
     }
   }
 }
@@ -817,5 +878,8 @@ export default {
 .errCell {
   border: 1px solid #e6686e !important;
   margin: 0px 0px -1px -1px;
+}
+.vxe-select--panel {
+  z-index: 9997 !important;
 }
 </style>
