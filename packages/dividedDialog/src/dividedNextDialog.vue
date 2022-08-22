@@ -9,17 +9,9 @@
       center
     >
       <el-row style="display:flex">
-        <el-col
-          :span="3"
-          :offset="1"
-          v-if="step !== 'expPooling'"
-        >
+        <el-col :span="3" :offset="1" v-if="step !== 'expPooling'">
           <el-dropdown @command="handlesample_workflow">
-            <el-button
-              type="primary"
-              class="border_size"
-              size="mini"
-            >
+            <el-button type="primary" class="border_size" size="mini">
               最后步骤
               <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
@@ -28,21 +20,20 @@
                 v-for="item in sample_workflow"
                 :key="item.code"
                 :command="item.code"
-                :disabled="item.isValid=='0'"
-              >{{ item.nameCn }}</el-dropdown-item>
+                :disabled="item.isValid == '0'"
+                >{{ item.nameCn }}</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
-        <el-col
-          :span="3"
-          style="marginLeft: 14px"
-        >
+        <el-col :span="3" style="marginLeft: 14px">
           <el-button
             type="primary"
             class="border_size"
             size="mini"
             @click="openProjectDialog"
-          >修改项目信息</el-button>
+            >修改项目信息</el-button
+          >
         </el-col>
       </el-row>
       <div style="margin-top:20px" />
@@ -56,9 +47,14 @@
             autoselect: true,
             mode: 'cell',
             activeMethod: activeMethod,
-            showIcon: false
+            showIcon: false,
           }"
-          :checkbox-config="{ checkMethod: selectableRow ,trigger: 'row', highlight: true, range: true}"
+          :checkbox-config="{
+            checkMethod: selectableRow,
+            trigger: 'row',
+            highlight: true,
+            range: true,
+          }"
           :keyboard-config="{
             isClip: true,
             isFNR: true,
@@ -67,7 +63,7 @@
             isEnter: true,
             isTab: true,
             isEdit: true,
-            editMethod: editMethod
+            editMethod: editMethod,
           }"
           :scroll-x="{ gt: 20 }"
           :scroll-y="{ gt: 30 }"
@@ -82,11 +78,7 @@
           @checkbox-all="handleSelectionChange"
           @checkbox-range-change="handleSelectionChange"
         >
-          <vxe-table-column
-            type="checkbox"
-            align="center"
-            width="55"
-          />
+          <vxe-table-column type="checkbox" align="center" width="55" />
           <vxe-table-column
             field="sampleIdLab"
             title="实验室号"
@@ -103,25 +95,24 @@
             :edit-render="{
               name: '$select',
               options: is_ultrafrac,
-              optionProps: { value: 'code', label: 'nameCn' }
+              optionProps: { value: 'code', label: 'nameCn' },
             }"
             field="isTwiceCfDna"
             title="是否生成二次洗脱提取产物*"
             align="center"
             header-class-name="column_header_edit"
           >
-            <template slot-scope="scope">{{ scope.row.isTwiceCfDna | getDirName(is_ultrafrac) }}</template>
+            <template slot-scope="scope">{{
+              scope.row.isTwiceCfDna | getDirName(is_ultrafrac)
+            }}</template>
             <template v-slot:edit="scope">
-              <vxe-select
-                v-model="scope.row.isTwiceCfDna"
-                placeholder="请选择"
-              >
+              <vxe-select v-model="scope.row.isTwiceCfDna" placeholder="请选择">
                 <vxe-option
                   v-for="item in is_ultrafrac"
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
-                  :disabled="item.isValid=='0'"
+                  :disabled="item.isValid == '0'"
                 />
               </vxe-select>
             </template>
@@ -137,10 +128,14 @@
             align="center"
             header-class-name="column_header_edit"
           >
-            <template slot-scope="scope">{{ scope.row.lastStep | getDirName(sample_workflow_step) }}</template>
+            <template slot-scope="scope">{{
+              scope.row.lastStep | getDirName(sample_workflow_step)
+            }}</template>
             <template v-slot:edit="scope">
               <vxe-select
-                v-if="scope.row.isUltrafrac == '1' ||scope.row.isUltrafrac == null"
+                v-if="
+                  scope.row.isUltrafrac == '1' || scope.row.isUltrafrac == null
+                "
                 v-model="scope.row.lastStep"
                 placeholder="最后步骤"
                 @change="changeLastStep(scope.row)"
@@ -150,7 +145,7 @@
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
-                  :disabled="item.isValid=='0'"
+                  :disabled="item.isValid == '0'"
                 />
               </vxe-select>
               <vxe-select
@@ -164,7 +159,7 @@
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
-                  :disabled="item.isValid=='0'"
+                  :disabled="item.isValid == '0'"
                 />
               </vxe-select>
             </template>
@@ -178,7 +173,9 @@
             align="center"
             header-class-name="column_header_edit"
           >
-            <template slot-scope="scope">{{ scope.row.libconstructionType | getDirName(libconstruction_type) }}</template>
+            <template slot-scope="scope">{{
+              scope.row.libconstructionType | getDirName(libconstruction_type)
+            }}</template>
             <template v-slot:edit="scope">
               <vxe-select
                 v-model="scope.row.libconstructionType"
@@ -189,33 +186,40 @@
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
-                  :disabled="item.isValid=='0'"
+                  :disabled="item.isValid == '0'"
                 />
               </vxe-select>
             </template>
           </vxe-table-column>
           <vxe-table-column
-            v-if="step == 'expExtraction'||step == 'expLibconstruction'"
+            v-if="step == 'expExtraction' || step == 'expLibconstruction'"
             :edit-render="{
-                name: '$input',
-                autoselect:true,
-                immediate: true,
-                props: { type: 'number' ,clearable: true, maxlength: '300',controls:false },
-              }"
+              name: '$input',
+              autoselect: true,
+              immediate: true,
+              props: {
+                type: 'number',
+                clearable: true,
+                maxlength: '300',
+                controls: false,
+              },
+            }"
             field="preinstallThroughput"
             label="预设通量"
             header-class-name="column_header_edit"
             align="center"
           />
           <vxe-table-column
-            v-if="step == 'expExtraction'||step == 'expLibconstruction'"
+            v-if="step == 'expExtraction' || step == 'expLibconstruction'"
             :edit-render="{}"
             field="throughputUnit"
             label="通量单位"
             header-class-name="column_header_edit"
             align="center"
           >
-            <template slot-scope="scope">{{ scope.row.throughputUnit | getDirName(throughput_unit) }}</template>
+            <template slot-scope="scope">{{
+              scope.row.throughputUnit | getDirName(throughput_unit)
+            }}</template>
             <template v-slot:edit="scope">
               <vxe-select
                 v-model="scope.row.throughputUnit"
@@ -226,7 +230,7 @@
                   :key="item.code"
                   :label="item.nameCn"
                   :value="item.code"
-                  :disabled="item.isValid=='0'"
+                  :disabled="item.isValid == '0'"
                 />
               </vxe-select>
             </template>
@@ -254,14 +258,10 @@
           />
         </vxe-table>
       </el-row>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          @click="sureDialogDividedNext"
-        >确定</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureDialogDividedNext"
+          >确定</el-button
+        >
       </span>
     </el-dialog>
     <select-project
@@ -279,7 +279,7 @@ import { values } from 'xe-utils/methods'
 import { createNamespacedHelpers } from 'vuex'
 const {
   mapState: mapStateU,
-  mapActions: mapActionsU
+  mapActions: mapActionsU,
 } = createNamespacedHelpers('difeiUtil')
 import batchEntity from '../../../mixins/batchEntity'
 import selectProject from './dialogSelectProject'
@@ -288,31 +288,31 @@ export default {
   props: {
     dividedNextTableData: {
       type: Array,
-      default: function () {
+      default: function() {
         return []
-      }
+      },
     },
     step: {
       type: String,
-      default: function () {
+      default: function() {
         return ''
-      }
+      },
     },
     entity: {
       type: Object,
-      default: function () {
+      default: function() {
         return {}
-      }
+      },
     },
     taskType: {
       type: String,
-      default: function () {
+      default: function() {
         return ''
-      }
+      },
     },
   },
   components: { selectProject },
-  data () {
+  data() {
     var validatePass = (rule, value, callback) => {
       var reg = /^[1-9]*[0-9][0-9]*$/
       if (!reg.test(value)) {
@@ -329,32 +329,42 @@ export default {
       dividedTableData: [],
       editColumn: ['vitroNumber'],
       query: {
-        vitroNumber: ''
+        vitroNumber: '',
       },
       rules: {
         vitroNumber: [
           {
             validator: validatePass,
             message: '请填写50以内的正整数',
-            trigger: 'blur'
-          }
-        ]
+            trigger: 'blur',
+          },
+        ],
       },
       selection: [],
       rowList: ['expLibconstruction'],
       showProject: false,
-      selectProjectList: []
+      selectProjectList: [],
     }
   },
-  created () {
-    var baseArr = ['sample_workflow_step', 'is_ultrafrac', 'libconstruction_type', 'throughput_unit']
-    baseArr.map(item => {
+  created() {
+    var baseArr = [
+      'sample_workflow_step',
+      'is_ultrafrac',
+      'libconstruction_type',
+      'throughput_unit',
+    ]
+    baseArr.map((item) => {
       this.getBasicDir(item)
     })
   },
   computed: {
-    ...mapStateU(['is_ultrafrac', 'sample_workflow_step', 'libconstruction_type', 'throughput_unit']),
-    sample_workflow: function () {
+    ...mapStateU([
+      'is_ultrafrac',
+      'sample_workflow_step',
+      'libconstruction_type',
+      'throughput_unit',
+    ]),
+    sample_workflow: function() {
       var arr = []
       if (this.step == 'expExtraction') {
         var arr1 = ['核酸提取', '文库构建', '上机']
@@ -369,14 +379,14 @@ export default {
       } else if (this.step == 'expSequencing') {
         var arr1 = ['上机']
       }
-      this.sample_workflow_step.forEach(item => {
+      this.sample_workflow_step.forEach((item) => {
         if (arr1.indexOf(item.nameCn) !== -1) {
           arr.push(item)
         }
       })
       return arr
     },
-    sample_workflow1: function () {
+    sample_workflow1: function() {
       var arr = []
       if (this.step == 'expExtraction') {
         var arr1 = ['核酸提取', '文库构建', '上机']
@@ -387,7 +397,7 @@ export default {
       } else if (this.step == 'expPooling') {
         var arr1 = ['上机']
       }
-      this.sample_workflow_step.forEach(item => {
+      this.sample_workflow_step.forEach((item) => {
         if (arr1.indexOf(item.nameCn) !== -1) {
           arr.push(item)
         }
@@ -397,20 +407,20 @@ export default {
   },
   methods: {
     ...mapActionsU(['getBasicDir', 'separteFromItemTable']),
-    doAfterShow () {
+    doAfterShow() {
       console.log(this.sample_workflow1)
     },
-    batch () {
+    batch() {
       if (this.selection.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据'
+          message: '请至少选择一条数据',
         })
         return
       }
-      this.$refs.vitroNumber.validate(valid => {
+      this.$refs.vitroNumber.validate((valid) => {
         if (valid) {
-          this.selection.map(element => {
+          this.selection.map((element) => {
             console.log(this.query.vitroNumber)
             element.vitroNumber = this.query.vitroNumber
           })
@@ -419,12 +429,12 @@ export default {
         } else {
           this.$message({
             type: 'error',
-            message: '请填写50以内的正整数'
+            message: '请填写50以内的正整数',
           })
         }
       })
     },
-    tableCellClassName ({ row, column, rowIndex, columnIndex }) {
+    tableCellClassName({ row, column, rowIndex, columnIndex }) {
       if (column.property) {
         var item = column.property + 'Error'
         if (row[item] == true) {
@@ -436,18 +446,18 @@ export default {
       }
       return ''
     },
-    updateTable () {
+    updateTable() {
       this.dividedTableData.push({})
       this.dividedTableData.pop()
       this.dividedNextTableData.push({})
       this.dividedNextTableData.pop()
     },
-    handleCancel () {
+    handleCancel() {
       this.$emit('cancel')
     },
-    judgeRules () {
+    judgeRules() {
       var error = false
-      this.dividedTableData.forEach(element => {
+      this.dividedTableData.forEach((element) => {
         element.vitroNumberError = false
         var reg = /^\+?[1-9][0-9]*$/
         if (!reg.test(element.vitroNumber)) {
@@ -466,21 +476,21 @@ export default {
         this.updateTable()
         this.$message({
           type: 'error',
-          message: '请填写50以内的正整数'
+          message: '请填写50以内的正整数',
         })
       }
       return error
     },
-    handlesample_workflow (command) {
+    handlesample_workflow(command) {
       if (this.selection.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据'
+          message: '请至少选择一条数据',
         })
         return
       }
       if (this.step == 'expExtraction') {
-        this.selection.map(item => {
+        this.selection.map((item) => {
           item.libconstructionType = ''
           if (command == 'sequencing') {
             item.throughputUnit = '04'
@@ -490,7 +500,7 @@ export default {
         })
       }
       if (this.step == 'expLibconstruction') {
-        this.selection.map(item => {
+        this.selection.map((item) => {
           if (command == 'sequencing') {
             item.throughputUnit = '04'
           } else {
@@ -498,37 +508,37 @@ export default {
           }
         })
       }
-      this.selection.map(item => {
+      this.selection.map((item) => {
         item.lastStep = command
         item.preinstallThroughput = ''
       })
     },
-    handleIsUltrafrac (command) {
+    handleIsUltrafrac(command) {
       if (this.selection.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据'
+          message: '请至少选择一条数据',
         })
         return
       }
-      this.selection.map(item => {
+      this.selection.map((item) => {
         item.isUltrafrac = command
         item.lastStep = ''
       })
     },
-    handleExpPooling () {
+    handleExpPooling() {
       if (this.judgeRules()) {
         return
       }
       var arr = []
-      this.dividedTableData.forEach(item => {
+      this.dividedTableData.forEach((item) => {
         item.isUltrafrac = null
         item.lastStep = ''
         for (let index = 0; index < item.vitroNumber; index++) {
           arr.push(JSON.parse(JSON.stringify(item)))
         }
       })
-      arr.forEach(item => {
+      arr.forEach((item) => {
         item.estimatedSqcTime = item.estimatedSqcTime
           ? this.$moment(item.estimatedSqcTime)
           : ''
@@ -538,30 +548,30 @@ export default {
       params.expTaskT = this.entity
       params.sampleList = arr
       console.log(params)
-      this.separteFromItemTable(params).then(res => {
+      this.separteFromItemTable(params).then((res) => {
         if (res.status == '2000') {
           this.$message({
             type: 'success',
-            message: '样本分管成功'
+            message: '样本分管成功',
           })
           this.handleCancel()
           this.$emit('sureDialogDividedNext')
         } else if (res.status == 'LIMSSEP001') {
           this.$message({
             type: 'error',
-            message: res.message
+            message: res.message,
           })
         } else {
           this.$message({
             type: 'error',
-            message: '操作失败，请重新再试'
+            message: '操作失败，请重新再试',
           })
         }
       })
     },
-    sureDialogDividedNext () {
+    sureDialogDividedNext() {
       var error = false
-      this.dividedNextTableData.forEach(item => {
+      this.dividedNextTableData.forEach((item) => {
         // if (item.isUltrafrac == null || item.isUltrafrac == '') {
         //   this.$set(item, 'isUltrafracError', true)
         //   error = true
@@ -573,7 +583,11 @@ export default {
           this.$set(item, 'lastStepError', false)
         }
         if (this.step == 'expExtraction') {
-          if ((item.lastStep == 'libconstruction' || item.lastStep == 'sequencing') && (item.libconstructionType == null || item.libconstructionType == '')) {
+          if (
+            (item.lastStep == 'libconstruction' ||
+              item.lastStep == 'sequencing') &&
+            (item.libconstructionType == null || item.libconstructionType == '')
+          ) {
             this.$set(item, 'libconstructionTypeError', true)
             error = true
           } else {
@@ -599,7 +613,7 @@ export default {
         this.updateTable()
         this.$message({
           type: 'error',
-          message: '请完善页面信息'
+          message: '请完善页面信息',
         })
         return
       }
@@ -607,15 +621,16 @@ export default {
       params.step = this.step
       params.expTaskT = this.entity
       params.sampleList = this.dividedNextTableData
-      params.sampleList.forEach(item => {
+      params.sampleList.forEach((item) => {
         item.isUltrafrac = '0'
+        item.isMpcr = '0'
       })
       console.log(params)
-      this.separteFromItemTable(params).then(res => {
+      this.separteFromItemTable(params).then((res) => {
         if (res.status == '2000') {
           this.$message({
             type: 'success',
-            message: '样本分管成功'
+            message: '样本分管成功',
           })
           this.handleCancel()
           this.dialogVisible = false
@@ -627,39 +642,46 @@ export default {
         } else if (res.status == 'LIMSSEP001') {
           this.$message({
             type: 'error',
-            message: '不可对接样分出来的样本再分管'
+            message: '不可对接样分出来的样本再分管',
           })
         } else {
           this.$message({
             type: 'error',
-            message: '操作失败，请重新再试'
+            message: '操作失败，请重新再试',
           })
         }
       })
     },
-    changeIsUltrafrac (val, row) {
+    changeIsUltrafrac(val, row) {
       row.lastStep = ''
     },
     // 是否可以编辑
-    activeMethod ({
-      row,
-      rowIndex,
-      column,
-      columnIndex
-    }) {
+    activeMethod({ row, rowIndex, column, columnIndex }) {
       if (column.property == 'isTwiceCfDna' && row.typeCode !== 'P') {
         return false
       }
       if (this.step == 'expExtraction') {
-        if ((column.property == 'libconstructionType') && row.lastStep !== 'libconstruction' && row.lastStep !== 'sequencing') {
+        if (
+          column.property == 'libconstructionType' &&
+          row.lastStep !== 'libconstruction' &&
+          row.lastStep !== 'sequencing'
+        ) {
           return false
         }
-        if ((column.property == 'throughputUnit' || column.property == 'preinstallThroughput') && row.lastStep !== 'sequencing') {
+        if (
+          (column.property == 'throughputUnit' ||
+            column.property == 'preinstallThroughput') &&
+          row.lastStep !== 'sequencing'
+        ) {
           return false
         }
       }
       if (this.step == 'expLibconstruction') {
-        if ((column.property == 'throughputUnit' || column.property == 'preinstallThroughput') && row.lastStep !== 'sequencing') {
+        if (
+          (column.property == 'throughputUnit' ||
+            column.property == 'preinstallThroughput') &&
+          row.lastStep !== 'sequencing'
+        ) {
           return false
         }
       }
@@ -668,7 +690,7 @@ export default {
       // }
       return true
     },
-    changeLastStep (row) {
+    changeLastStep(row) {
       console.log(row)
       if (this.step == 'expExtraction') {
         row.libconstructionType = ''
@@ -680,43 +702,49 @@ export default {
         row.throughputUnit = ''
       }
     },
-    openProjectDialog () {
+    openProjectDialog() {
       if (this.selection.length == 0) {
         this.$message({
           type: 'error',
-          message: '请至少选择一条数据'
+          message: '请至少选择一条数据',
         })
         return
       }
       // 如果用户选中的样本属于超过一个订单，则提示“不同订单的样本无法批量修改项目信息，请确保选中的样本属于相同的订单。”
       const orderList = []
-      this.selection.map(item => {
+      this.selection.map((item) => {
         if (item.orderCode && orderList.indexOf(item.orderCode) === -1) {
           orderList.push(item.orderCode)
         }
       })
       if (orderList.length > 1) {
-        this.$message.error('不同订单的样本无法批量修改项目信息，请确保选中的样本属于相同的订单。')
+        this.$message.error(
+          '不同订单的样本无法批量修改项目信息，请确保选中的样本属于相同的订单。'
+        )
         return
       }
-      this.selectProjectList = this.selection[0].orderProjectListStr.split(',').map(projectId => {
-        return {
-          projectId
-        }
-      })
+      this.selectProjectList = this.selection[0].orderProjectListStr
+        .split(',')
+        .map((projectId) => {
+          return {
+            projectId,
+          }
+        })
       this.showProject = true
     },
-    saveProject (projectArr) {
-      const str = projectArr.map(project => {
-        return project.projectId
-      }).join(',')
-      this.selection.map(item => {
+    saveProject(projectArr) {
+      const str = projectArr
+        .map((project) => {
+          return project.projectId
+        })
+        .join(',')
+      this.selection.map((item) => {
         item.newProject = str
         item.basProjectInfoTList = projectArr
       })
       this.showProject = false
-    }
-  }
+    },
+  },
 }
 </script>
 
